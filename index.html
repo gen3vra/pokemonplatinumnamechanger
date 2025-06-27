@@ -441,11 +441,12 @@
 
         const BASE_UPPER = 0x012B; // 'A'
         const BASE_LOWER = 0x0145; // 'a'
-
+        // 0001 - Space
         function transformChar(c) {
             const code = c.charCodeAt(0);
             if (code >= 65 && code <= 90) return BASE_UPPER + (code - 65);       // A–Z
             if (code >= 97 && code <= 122) return BASE_LOWER + (code - 97);     // a–z
+            if (code === 32) return 0x0001;
             throw new Error(`Unsupported character: ${c}`);
         }
 
