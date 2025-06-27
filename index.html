@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokemon Platinum Name Changer</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: sans-serif;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a1a 50%, #0f0f0f 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 25% 25%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(255, 119, 198, 0.2) 0%, transparent 50%);
+            animation: float 20s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            backdrop-filter: blur(100px);
+            z-index: -1;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+
+            33% {
+                transform: translate(30px, -30px) rotate(120deg);
+            }
+
+            66% {
+                transform: translate(-20px, 20px) rotate(240deg);
+            }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: #ffffff;
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.1rem;
+            font-weight: 300;
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 20px;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 1.2rem;
+            z-index: 2;
+            transition: color 0.3s ease;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 20px 20px 20px 60px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            color: #ffffff;
+            font-size: 1.1rem;
+            font-weight: 400;
+            outline: none;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .text-input:focus {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(120, 119, 198, 0.5);
+            box-shadow: 0 0 0 3px rgba(120, 119, 198, 0.1);
+        }
+
+        .text-input:focus+.input-icon {
+            color: rgba(120, 119, 198, 0.8);
+        }
+
+        .text-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+            font-weight: 300;
+        }
+
+        .output-section {
+            position: relative;
+        }
+
+        .copy-button {
+            position: absolute;
+            bottom: 16px;
+            right: 16px;
+            padding: 10px 12px;
+            background: rgba(120, 119, 198, 0.2);
+            border: 1px solid rgba(120, 119, 198, 0.3);
+            border-radius: 10px;
+            color: rgba(255, 255, 255, 0.8);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            font-size: 0.9rem;
+            display: none;
+            align-items: center;
+            gap: 6px;
+            z-index: 10;
+        }
+
+        .copy-button:hover {
+            background: rgba(120, 119, 198, 0.3);
+            border-color: rgba(120, 119, 198, 0.5);
+            color: #ffffff;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(120, 119, 198, 0.2);
+        }
+
+        .copy-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 6px rgba(120, 119, 198, 0.3);
+        }
+
+        .copy-button.show {
+            display: flex;
+        }
+
+        .copy-button.success {
+            background: rgba(46, 204, 113, 0.2);
+            border-color: rgba(46, 204, 113, 0.3);
+            color: rgba(46, 204, 113, 1);
+        }
+
+        .copy-button.success:hover {
+            background: rgba(46, 204, 113, 0.3);
+            border-color: rgba(46, 204, 113, 0.5);
+        }
+
+        .output-label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .output-label i {
+            margin-right: 8px;
+            color: rgba(120, 119, 198, 0.7);
+        }
+
+        .output-display {
+            width: 100%;
+            min-height: 200px;
+            max-height: 400px;
+            padding: 24px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.6;
+            overflow-y: auto;
+            backdrop-filter: blur(10px);
+            position: relative;
+            transition: all 0.3s ease;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+        }
+
+        .output-display:empty::before {
+            content: 'Your processed text will appear here...';
+            color: rgba(255, 255, 255, 0.3);
+            font-style: italic;
+            font-weight: 300;
+        }
+
+        .output-display.has-content {
+            background: rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        .output-display::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .output-display::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+        }
+
+        .output-display::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .output-display::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .input-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .char-count {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .processing-indicator {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            color: rgba(120, 119, 198, 0.8);
+        }
+
+        .processing-indicator.active {
+            display: flex;
+        }
+
+        .processing-indicator i {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 24px;
+                margin: 10px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .header p {
+                font-size: 1rem;
+            }
+
+            .text-input {
+                padding: 16px 16px 16px 50px;
+                font-size: 1rem;
+            }
+
+            .input-icon {
+                left: 16px;
+                font-size: 1.1rem;
+            }
+
+            .output-display {
+                min-height: 150px;
+                padding: 20px;
+                font-size: 0.95rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.75rem;
+            }
+
+            .text-input {
+                padding: 14px 14px 14px 45px;
+            }
+
+            .input-icon {
+                left: 14px;
+                font-size: 1rem;
+            }
+        }
+
+        .container:hover {
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+            transform: translateY(-2px);
+            transition: all 0.3s ease;
+        }
+
+        .text-input:hover:not(:focus) {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        * {
+            transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .reminder {
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            margin-top: 10px;
+            display: block;
+            background-color: #747474;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-magic"></i> Pokemon Platinum Name Changer</h1>
+            <p>Enter your name below (7 characters max) and then press SELECT<br> <span class="reminder">Press
+                    SELECT in game</span></p>
+        </div>
+
+        <div class="input-section">
+            <div class="input-wrapper">
+                <input type="text" id="textInput" class="text-input" placeholder="Enter your name" autocomplete="off"
+                    spellcheck="false">
+                <i class="fas fa-edit input-icon"></i>
+            </div>
+            <div class="input-meta">
+                <div class="char-count">
+                    <i class="fas fa-keyboard"></i>
+                    <span id="charCount">0 characters</span>
+                </div>
+                <div class="processing-indicator" id="processingIndicator">
+                    <i class="fas fa-cog"></i>
+                    <span>Processing...</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="output-section">
+            <div class="output-label">
+                <i class="fas fa-code"></i>
+                Processed Output
+            </div>
+            <div id="outputDisplay" class="output-display"></div>
+            <button id="copyButton" class="copy-button" title="Copy to clipboard">
+                <i class="fas fa-copy"></i>
+                <span>Copy</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const textInput = document.getElementById('textInput');
+        const outputDisplay = document.getElementById('outputDisplay');
+        const charCount = document.getElementById('charCount');
+        const processingIndicator = document.getElementById('processingIndicator');
+        const copyButton = document.getElementById('copyButton');
+
+        const BASE_UPPER = 0x012B; // 'A'
+        const BASE_LOWER = 0x0145; // 'a'
+
+        function transformChar(c) {
+            const code = c.charCodeAt(0);
+            if (code >= 65 && code <= 90) return BASE_UPPER + (code - 65);       // A–Z
+            if (code >= 97 && code <= 122) return BASE_LOWER + (code - 97);     // a–z
+            throw new Error(`Unsupported character: ${c}`);
+        }
+
+        function encodeNameHex(name) {
+            const hexCodes = [...name].map(transformChar);
+
+            if (hexCodes.length > 7) {
+                throw new Error('Name cannot exceed 7 characters.');
+            }
+
+            hexCodes.push(0xFFFF);
+
+            const wordPairs = [];
+
+            for (let i = 0; i < hexCodes.length; i += 2) {
+                const left = hexCodes[i];
+                const right = hexCodes[i + 1] ?? 0x0000; // pad if odd number of halfwords
+                wordPairs.push([right, left]); // rtl in word
+            }
+
+            while (wordPairs.length < 4) {
+                wordPairs.push([0x0000, 0x0000]);
+            }
+
+            return wordPairs;
+        }
+
+        function processText(inputText) {
+            const trimmed = inputText.trim();
+            if (!trimmed) return '';
+
+            const pairs = encodeNameHex(trimmed);
+
+            const header = [
+                '94000130 FFFB0000',
+                '62101D40 00000000',
+                'B2101D40 00000000',
+                'E000007C 00000010'
+            ];
+
+            const body = pairs.map(([hi, lo]) =>
+                `${hi.toString(16).padStart(4, '0')} ${lo.toString(16).padStart(4, '0')}`.toUpperCase()
+            );
+
+            const footer = ['D2000000 00000000'];
+
+            var rawCode = [...header, ...body, ...footer].join('\n');
+            return formatAR(rawCode);
+        }
+
+        function formatAR(rawCode) {
+            const lines = rawCode.trim().split('\n').map(line => line.trim());
+            const header = lines.slice(0, 4);
+            const body = lines.slice(4, -1);
+            const footer = lines[lines.length - 1];
+
+            const formattedBody = [];
+            for (let i = 0; i < body.length; i += 2) {
+                const first = body[i].replace(/\s+/g, '');
+                const second = body[i + 1] ? body[i + 1].replace(/\s+/g, '') : '00000000';
+                formattedBody.push(`${first} ${second}`);
+            }
+
+            return [...header, ...formattedBody, footer].join('\n');
+        }
+
+        function updateCharCount(text) {
+            const count = text.length;
+            if (count > 7) {
+                charCount.textContent = `Too long! (max 7 characters)`;
+                charCount.style.color = 'red';
+            } else {
+                charCount.textContent = `${count} character${count !== 1 ? 's' : ''}`;
+                charCount.style.color = 'rgba(255, 255, 255, 0.4)';
+            }
+        }
+
+        function showProcessingIndicator() {
+            processingIndicator.classList.add('active');
+            setTimeout(() => {
+                processingIndicator.classList.remove('active');
+            }, 150);
+        }
+
+        function handleTextInput(event) {
+            const inputText = event.target.value;
+
+            showProcessingIndicator();
+            updateCharCount(inputText);
+            const processedText = processText(inputText);
+            outputDisplay.textContent = processedText;
+
+            if (processedText) {
+                outputDisplay.classList.add('has-content');
+                copyButton.classList.add('show');
+            } else {
+                outputDisplay.classList.remove('has-content');
+                copyButton.classList.remove('show');
+            }
+        }
+
+        textInput.addEventListener('input', handleTextInput);
+
+        textInput.addEventListener('paste', function (event) {
+            // Small delay to allow paste content to be processed
+            setTimeout(() => {
+                handleTextInput(event);
+            }, 10);
+        });
+
+        window.addEventListener('load', function () {
+            textInput.focus();
+        });
+
+        document.addEventListener('keydown', function (event) {
+            // Ctrl/Cmd + L to focus input
+            if ((event.ctrlKey || event.metaKey) && event.key === 'l') {
+                event.preventDefault();
+                textInput.focus();
+                textInput.select();
+            }
+
+            // Escape to clear input
+            if (event.key === 'Escape' && document.activeElement === textInput) {
+                textInput.value = '';
+                handleTextInput({target: textInput});
+            }
+        });
+
+        // Add smooth scrolling for output when content overflows
+        function smoothScrollToBottom(element) {
+            element.scrollTo({
+                top: element.scrollHeight,
+                behavior: 'smooth'
+            });
+        }
+
+        const outputObserver = new MutationObserver(function (mutations) {
+            mutations.forEach(function (mutation) {
+                if (mutation.type === 'childList' || mutation.type === 'characterData') {
+                    const element = mutation.target;
+                    if (element.scrollHeight > element.clientHeight) {
+                        smoothScrollToBottom(element);
+                    }
+                }
+            });
+        });
+
+        outputObserver.observe(outputDisplay, {
+            childList: true,
+            subtree: true,
+            characterData: true
+        });
+
+        function handleError(error) {
+            console.error('Text processing error:', error);
+            outputDisplay.textContent = 'Error processing text. Please try again.';
+            outputDisplay.classList.add('has-content');
+        }
+
+        const originalHandleTextInput = handleTextInput;
+        handleTextInput = function (event) {
+            try {
+                originalHandleTextInput(event);
+            } catch (error) {
+                handleError(error);
+            }
+        };
+
+        async function copyToClipboard() {
+            const textToCopy = outputDisplay.textContent;
+
+            if (!textToCopy) {
+                return;
+            }
+
+            try {
+                // Try using the modern Clipboard API first
+                if (navigator.clipboard && window.isSecureContext) {
+                    await navigator.clipboard.writeText(textToCopy);
+                } else {
+                    // Fallback for older browsers or insecure contexts
+                    const textArea = document.createElement('textarea');
+                    textArea.value = textToCopy;
+                    textArea.style.position = 'fixed';
+                    textArea.style.left = '-999999px';
+                    textArea.style.top = '-999999px';
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+                    document.execCommand('copy');
+                    textArea.remove();
+                }
+
+                showCopySuccess();
+            } catch (error) {
+                console.error('Failed to copy text:', error);
+                showCopyError();
+            }
+        }
+
+        function showCopySuccess() {
+            const originalIcon = copyButton.querySelector('i');
+            const originalText = copyButton.querySelector('span');
+
+            copyButton.classList.add('success');
+            originalIcon.className = 'fas fa-check';
+            originalText.textContent = 'Copied!';
+
+            // Reset after 2 seconds
+            setTimeout(() => {
+                copyButton.classList.remove('success');
+                originalIcon.className = 'fas fa-copy';
+                originalText.textContent = 'Copy';
+            }, 2000);
+        }
+
+        function showCopyError() {
+            const originalIcon = copyButton.querySelector('i');
+            const originalText = copyButton.querySelector('span');
+
+            // Change to error state temporarily
+            originalIcon.className = 'fas fa-exclamation-triangle';
+            originalText.textContent = 'Error';
+
+            // Reset after 2 seconds
+            setTimeout(() => {
+                originalIcon.className = 'fas fa-copy';
+                originalText.textContent = 'Copy';
+            }, 2000);
+        }
+
+        // Add click event listener to copy button
+        copyButton.addEventListener('click', copyToClipboard);
+
+        // Add keyboard shortcut for copying (Ctrl/Cmd + C when output is focused)
+        document.addEventListener('keydown', function (event) {
+            if ((event.ctrlKey || event.metaKey) && event.key === 'c' && outputDisplay.textContent) {
+                // Only trigger if no text is selected elsewhere
+                const selection = window.getSelection();
+                if (!selection.toString()) {
+                    event.preventDefault();
+                    copyToClipboard();
+                }
+            }
+        });
+
+        console.log('ready');
+    </script>
+</body>
+
+</html>
